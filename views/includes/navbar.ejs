@@ -1,51 +1,279 @@
 <style>
-  .search-btn{
-    background-color: #fe424d;
-    color: white;
-    border-radius: 25px;
-    padding: 0 1rem 0 1rem;
+/* ================================
+   StaySphere Premium Navbar
+   ================================ */
+
+.ss-navbar {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
+}
+
+/* Brand */
+.ss-brand {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #ff385c !important;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.ss-brand i {
+  font-size: 1.4rem;
+}
+
+/* Nav links */
+.ss-nav-link {
+  font-weight: 500;
+  margin-right: 0.8rem;
+  position: relative;
+}
+
+.ss-nav-link::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 2px;
+  background: #ff385c;
+  left: 0;
+  bottom: -4px;
+  transition: width 0.3s ease;
+}
+
+.ss-nav-link:hover::after {
+  width: 100%;
+}
+
+/* Search */
+.ss-search {
+  position: relative;
+}
+
+.ss-search input {
+  border-radius: 30px;
+  padding: 0.6rem 3rem 0.6rem 1.2rem;
+  font-size: 0.95rem;
+  border: 1px solid #ddd;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+}
+
+.ss-search button {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  background: #ff385c;
+  color: white;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.ss-search button:hover {
+  transform: translateY(-50%) scale(1.05);
+}
+
+/* Auth buttons */
+.ss-auth a {
+  font-weight: 600;
+  margin-left: 0.6rem;
+}
+
+.ss-auth .signup {
+  background: #ff385c;
+  color: white !important;
+  padding: 0.45rem 1rem;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+}
+
+.ss-auth .signup:hover {
+  background: #e0314b;
+  transform: translateY(-2px);
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .ss-search {
+    margin: 1rem 0;
   }
-  .search-btn:hover{
-    background-color: #fe424d;
-    color: white;
-  }
-  .search-btn i{
-    display: inline;
-    margin-right: 0.5rem;
-  }
-  .search-inp {
-    border-radius: 25px;
-    padding: 0.5rem 3rem 0.5rem 3rem;
-    font-size: 1rem;
-  }
+}
 </style>
 
-
-<nav class="navbar navbar-expand-md bg-body-light border-bottom sticky-top">
+<nav class="navbar navbar-expand-md sticky-top ss-navbar">
   <div class="container-fluid">
-    <a class="navbar-brand" href="/listings"><i class="fa-solid fa-compass"></i></a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" >
+
+    <!-- Brand -->
+    <a class="navbar-brand ss-brand" href="/listings">
+      <i class="fa-solid fa-compass"></i> StaySphere
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup">
       <span class="navbar-toggler-icon"></span>
     </button>
+
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+
+      <!-- Left -->
       <div class="navbar-nav">
-        <a class="nav-link" href="/listings">Explore</a>
+        <a class="nav-link ss-nav-link" href="/listings">Explore</a>
       </div>
-      <div class="navbar-nav ms-auto">
-        <form class="d-flex" role="search">
-        <input class="form-control me-2 search-inp" type="search" placeholder="Search destinations" />
-        <button class="btn search-btn" type="submit"><i class="fa-solid fa-magnifying-glass"></i>Search</button>
-    </form>
+
+      <!-- Center Search -->
+      <div class="navbar-nav mx-auto">
+        <form class="ss-search">
+          <input type="search" placeholder="Search destinations">
+          <button type="submit">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
+        </form>
       </div>
-      <div class="navbar-nav ms-auto">
-        <a class="nav-link" href="/listings/new">Airbnb your home </a>
+
+      <!-- Right -->
+      <div class="navbar-nav ss-auth">
+        <a class="nav-link ss-nav-link" href="/listings/new">Host your home</a>
+
         <% if(!currUser){ %>
-        <a class="nav-link "  href="/signup"><b>Sign up</b></a>
-        <a class="nav-link" href="/login"><b>Log in</b></a>
-        <% } %> <% if(currUser){ %>
-        <a class="nav-link" href="/logout"><b>Log out</b> </a>
-        <% } %> 
+          <a class="nav-link ss-nav-link" href="/login">Log in</a>
+          <a class="nav-link signup" href="/signup">Sign up</a>
+        <% } %>
+
+        <% if(currUser){ %>
+          <a class="nav-link ss-nav-link" href="/logout">Log out</a>
+        <% } %>
       </div>
+
     </div>
   </div>
 </nav>
+<style>
+/* ================================
+   StaySphere Hero Section
+   ================================ */
+
+.ss-hero {
+  height: 90vh;
+  background:
+    linear-gradient(
+      rgba(15, 23, 42, 0.55),
+      rgba(15, 23, 42, 0.75)
+    ),
+    url("https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1920&auto=format&fit=crop");
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-align: center;
+  padding: 2rem;
+}
+
+.ss-hero-content {
+  max-width: 900px;
+  animation: heroFadeUp 1.2s ease forwards;
+}
+
+.ss-hero h1 {
+  font-size: 3.8rem;
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+
+.ss-hero h1 span {
+  color: #ff385c;
+}
+
+.ss-hero p {
+  font-size: 1.25rem;
+  opacity: 0.95;
+  margin-bottom: 2.5rem;
+}
+
+/* Hero buttons */
+.ss-hero-actions {
+  display: flex;
+  gap: 1.2rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.ss-btn-primary {
+  background: #ff385c;
+  color: white;
+  padding: 0.9rem 2.2rem;
+  border-radius: 30px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.ss-btn-primary:hover {
+  background: #e0314b;
+  transform: translateY(-3px);
+}
+
+.ss-btn-outline {
+  border: 2px solid white;
+  color: white;
+  padding: 0.85rem 2.2rem;
+  border-radius: 30px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  background: transparent;
+  transition: all 0.3s ease;
+}
+
+.ss-btn-outline:hover {
+  background: white;
+  color: #0f172a;
+  transform: translateY(-3px);
+}
+
+/* Animation */
+@keyframes heroFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .ss-hero h1 {
+    font-size: 2.6rem;
+  }
+
+  .ss-hero p {
+    font-size: 1.05rem;
+  }
+}
+</style>
+
+<section class="ss-hero">
+  <div class="ss-hero-content">
+    <h1>
+      Find your perfect <span>stay</span>,<br>
+      anywhere in the world
+    </h1>
+    <p>
+      Book unique homes, experiences, and getaways curated for comfort,
+      style, and unforgettable travel moments.
+    </p>
+
+    <div class="ss-hero-actions">
+      <a href="/listings" class="ss-btn-primary">Explore Stays</a>
+      <a href="/listings/new" class="ss-btn-outline">Become a Host</a>
+    </div>
+  </div>
+</section>

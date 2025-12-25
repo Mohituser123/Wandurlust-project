@@ -1,90 +1,374 @@
-<% layout("/layouts/boilerplate")%>
-<div class="row mt-3">
-    <div class="col-8 offset-3">
-    <h3><%= listing.title%></h3>
-    </div>
-    <div class="card col-6 offset-3 show-card listing-card">
-        <img src="<%= listing.image.url %>" class="card-img-top show-img" alt="listing_image">
-  <div class="card-body">
-    <p class="card-text">Owned by <i><%= listing.owner ? listing.owner.username : 'Unknown User' %></i></p>
+<% layout("/layouts/boilerplate") %>
 
+<style>
+/* ===============================
+   🌟 ULTRA PREMIUM SHOW PAGE 🌟
+================================ */
 
+/* Page background glow */
+body {
+    background: linear-gradient(135deg, #f8fafc, #eef2ff);
+}
 
-    <p class="card-text"><%= listing.description%></p>
-    <p class="card-text">&#8377;<%= listing.price.toLocaleString("en-IN")%></p>
-    <p class="card-text"><%= listing.location%></p>
-    <p class="card-text"><%= listing.country%></p>
+/* Wrapper */
+.show-wrapper {
+    max-width: 1100px;
+    margin: auto;
+    padding: 2.5rem 1rem;
+}
 
-    
-    </div>
-</div>
-   
-<br>
-<% if (currUser && listing.owner && String(listing.owner._id) === String(currUser._id)) { %>
+/* Title */
+.show-title {
+    font-size: 2.3rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 1.5rem;
+    color: #111827;
+}
 
-    <div class="btns">
-    <a href="/listings/<%= listing._id%>/edit" class="btn btn-dark col-1 offset-3 edit-btn">Edit </a>
-    <form method="post" action="/listings/<%=listing._id%>?_method=DELETE">
-        <button class="btn btn-dark offset-5">Delete </button>
-    </form>
-</div>
-<%}%>
-<div class="col-8 offset-3 mb-3">
-    <hr>
-    <% if(currUser){%>
-    <h4>Leave a Review</h4>
-    <form action="/listings/<%= listing._id %>/reviews" method="POST" novalidate class="needs-validation">
-        <!--<div class="mb-3 mt-3">
-            <label for="rating" class="form-label">Rating</label>
-            <input type="range" min="1" max="5" id="rating" name="review[rating]" class="form-range"/>
+/* MAIN CARD */
+.show-card {
+    border-radius: 26px;
+    overflow: hidden;
+    background: rgba(255,255,255,0.9);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 25px 60px rgba(0,0,0,0.15);
+    transition: transform 0.3s ease;
+}
 
-        </div>-->
-        <div class="mb-3 mt-3">
-            <label for="rating" class="form-label">Rating</label>
-        <fieldset class="starability-slot">
-        <!--<label for="rating" class="form-label">Rating</label>-->
-        <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="1" checked aria-label="No rating." />
-        <input type="radio" id="first-rate1" name="review[rating]" value="1" />
-        <label for="first-rate1" title="Terrible">1 star</label>
-        <input type="radio" id="first-rate2" name="review[rating]" value="2" />
-        <label for="first-rate2" title="Not good">2 stars</label>
-        <input type="radio" id="first-rate3" name="review[rating]" value="3" />
-        <label for="first-rate3" title="Average">3 stars</label>
-        <input type="radio" id="first-rate4" name="review[rating]" value="4" />
-        <label for="first-rate4" title="Very good">4 stars</label>
-        <input type="radio" id="first-rate5" name="review[rating]" value="5" />
-        <label for="first-rate5" title="Amazing">5 stars</label>
-        </fieldset>
-        </div>
-        <div>
-            <label for="comment" class="form-label">Comments</label>
-            <textarea name="review[comment]" id="comment" cols="30" rows="5" class="form-control" required></textarea>
-            <div class="invalid-feedback">Please add some comments for review</div>
-        </div>
-        <br>
-        <button class="btn btn-outline-dark">Submit</button>
-    </form>
-    <hr>
-    <%}%>
+.show-card:hover {
+    transform: translateY(-4px);
+}
 
-    <p><b> All Reviews</b></p>
-    <div class="row ">
-    <% for(review of listing.reviews){%>
-        <div class="card col-5 ms-3 mb-3">
-            <div class="card-body">
-                <h5 class="card-title"><%= review.author.username%></h5>
-                <p class="starability-result card-text" data-rating="<%= review.rating %>"></p>
-                <p class="card-text"><%= review.comment%></p>
+/* IMAGE */
+.show-img {
+    width: 100%;
+    max-height: 520px;
+    object-fit: contain;
+    background: radial-gradient(circle, #f9fafb, #eef2f7);
+    padding: 16px;
+    transition: transform 0.5s ease;
+}
 
+.show-img:hover {
+    transform: scale(1.05);
+}
+
+/* BODY */
+.show-body {
+    padding: 2rem;
+}
+
+/* Owner */
+.owner {
+    font-size: 0.95rem;
+    color: #6b7280;
+}
+
+.owner span {
+    font-weight: 700;
+    color: #111827;
+}
+
+/* Description */
+.show-body p {
+    font-size: 1.05rem;
+    color: #374151;
+}
+
+/* PRICE */
+.price {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #fff;
+    background: linear-gradient(135deg, #ff385c, #ff5a5f);
+    display: inline-block;
+    padding: 8px 18px;
+    border-radius: 999px;
+    margin: 1rem 0;
+    box-shadow: 0 10px 25px rgba(255,56,92,0.35);
+}
+
+/* LOCATION */
+.location {
+    font-size: 1rem;
+    color: #1f2937;
+    margin-top: 0.5rem;
+}
+
+/* ACTION BUTTONS */
+.show-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.show-actions .btn {
+    border-radius: 999px;
+    padding: 8px 22px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.show-actions .btn:hover {
+    transform: translateY(-2px);
+}
+
+/* REVIEW SECTION */
+.review-section {
+    margin-top: 3.5rem;
+}
+
+.review-section h4,
+.review-section h5 {
+    font-weight: 700;
+    color: #111827;
+}
+
+/* REVIEW FORM */
+.review-form textarea {
+    border-radius: 16px;
+    padding: 12px;
+}
+
+/* REVIEW CARD */
+.review-card {
+    border-radius: 20px;
+    background: #ffffff;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+    transition: transform 0.3s ease;
+}
+
+.review-card:hover {
+    transform: translateY(-3px);
+}
+
+.review-card h5 {
+    font-weight: 700;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .show-title {
+        font-size: 1.8rem;
+    }
+    .show-img {
+        max-height: 300px;
+    }
+}
+
+/* Star Rating UI */
+.star-rating {
+    direction: rtl;
+    display: inline-flex;
+    font-size: 1.5rem;
+    gap: 0.3rem;
+}
+
+.star-rating input {
+    display: none;
+}
+
+.star-rating label {
+    cursor: pointer;
+    color: #ddd;
+    transition: color 0.3s, transform 0.2s;
+}
+
+.star-rating label:hover,
+.star-rating label:hover ~ label,
+.star-rating input:checked ~ label {
+    color: #ff385c;
+}
+
+.star-rating label i {
+    pointer-events: none;
+}
+
+.star-rating label:hover {
+    transform: scale(1.2);
+}
+
+/* Star display for reviews */
+.star-display {
+    display: flex;
+    gap: 0.2rem;
+    font-size: 1.2rem;
+    color: #ff385c;
+}
+
+.star-display .filled {
+    color: #ff385c;
+}
+
+.star-display i.fa-regular.fa-star {
+    color: #ddd;
+}
+</style>
+
+<div class="show-wrapper">
+
+    <!-- TITLE -->
+    <h2 class="show-title"><%= listing.title %></h2>
+
+    <!-- MAIN CARD -->
+    <div class="show-card mb-4">
+        <img src="<%= listing.image.url %>" class="show-img" alt="listing image">
+
+        <div class="show-body">
+            <p class="owner">
+                Hosted by <span><%= listing.owner ? listing.owner.username : "Unknown User" %></span>
+            </p>
+
+            <p><%= listing.description %></p>
+
+            <div class="price">
+                ₹ <%= listing.price.toLocaleString("en-IN") %> / night
             </div>
-            <form class="mb-3 " method="POST" action="/listings/<%= listing._id%>/reviews/<%=review._id%>?_method=DELETE">
-                <button class="btn btn-sm btn-dark">Delete</button>
+
+            <p class="location">
+                <i class="fa-solid fa-location-dot me-1"></i>
+                <%= listing.location %>, <%= listing.country %>
+            </p>
+
+            <% if (currUser && listing.owner && String(listing.owner._id) === String(currUser._id)) { %>
+                <div class="show-actions">
+                    <a href="/listings/<%= listing._id %>/edit" class="btn btn-outline-dark">
+                        Edit
+                    </a>
+                    <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE">
+                        <button class="btn btn-dark">
+                            Delete
+                        </button>
+                    </form>
+                </div>
+            <% } %>
+
+            <% if(currUser && (!listing.owner || String(listing.owner._id) !== String(currUser._id))){ %>
+                <div class="show-actions">
+                    <button id="rzp-button" class="btn btn-outline-danger">Book Now</button>
+                </div>
+            <% } %>
+
+        </div>
+    </div>
+
+    <!-- REVIEWS -->
+    <div class="review-section">
+
+        <% if(currUser){ %>
+            <h4>Leave a Review</h4>
+
+            <form action="/listings/<%= listing._id %>/reviews"
+                  method="POST"
+                  class="needs-validation review-form"
+                  novalidate>
+
+                <div class="mb-3">
+                    <label class="form-label">Rating</label>
+                    <div class="star-rating">
+                        <% for(let i=5;i>=1;i--){ %>
+                            <input type="radio" id="star-<%=i%>" name="review[rating]" value="<%=i%>" />
+                            <label for="star-<%=i%>" title="<%= i %> star">
+                                <i class="fa-solid fa-star"></i>
+                            </label>
+                        <% } %>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Comment</label>
+                    <textarea name="review[comment]" rows="4" class="form-control" required></textarea>
+                    <div class="invalid-feedback">Please add a comment</div>
+                </div>
+
+                <button class="btn btn-outline-dark">
+                    Submit Review
+                </button>
             </form>
 
+            <hr>
+        <% } %>
+
+        <h5 class="mb-3">All Reviews</h5>
+
+        <div class="row">
+            <% for(review of listing.reviews){ %>
+                <div class="col-md-6 mb-3">
+                    <div class="review-card p-3">
+                        <h5><%= review.author.username %></h5>
+
+                        <div class="star-display">
+                            <% for(let i=1;i<=5;i++){ %>
+                                <% if(i <= review.rating){ %>
+                                    <i class="fa-solid fa-star filled"></i>
+                                <% } else { %>
+                                    <i class="fa-regular fa-star"></i>
+                                <% } %>
+                            <% } %>
+                        </div>
+
+                        <p><%= review.comment %></p>
+
+                        <form method="POST"
+                              action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE">
+                            <button class="btn btn-sm btn-dark mt-2">
+                                Delete
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            <% } %>
         </div>
-    <%}%>
     </div>
-
-</div>
 </div>
 
+<!-- Razorpay Checkout -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+document.getElementById("rzp-button")?.addEventListener("click", async function(e){
+    e.preventDefault();
+    const amount = <%= listing.price %>; // in INR
+
+    try {
+        // Create order
+        const res = await fetch(`/bookings/create-order/<%= listing._id %>`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ amount })
+        });
+
+        const order = await res.json();
+
+        const options = {
+            key: "<%= process.env.RAZORPAY_KEY_ID %>",
+            amount: order.amount,
+            currency: order.currency,
+            name: "StaySphere",
+            description: "<%= listing.title %>",
+            order_id: order.id,
+            handler: async function(response){
+                const verify = await fetch("/bookings/verify-payment", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(response)
+                });
+                const result = await verify.json();
+                if(result.success){
+                    alert("Payment Successful! Booking Confirmed.");
+                    window.location.href = "/bookings/success";
+                } else {
+                    alert("Payment Failed!");
+                }
+            },
+            theme: { color: "#ff385c" }
+        };
+
+        const rzp = new Razorpay(options);
+        rzp.open();
+    } catch(err) {
+        console.error(err);
+        alert("Something went wrong, please try again.");
+    }
+});
+</script>

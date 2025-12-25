@@ -1,16 +1,124 @@
+<style>
+/* ================================
+   StaySphere – Premium Footer
+   ================================ */
+.ss-footer {
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    padding: 2.5rem 1.5rem;
+    margin-top: 5rem;
+    color: #e5e7eb;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
 
-<footer>
-    <div class="f-info">
-        <div class="f-info-socials">
-            <i class="fa-brands fa-square-facebook"></i>
-            <i class="fa-brands fa-square-instagram"></i>
-            <i class="fa-brands fa-linkedin"></i>
+.ss-footer-container {
+    max-width: 1200px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.2rem;
+    text-align: center;
+}
+
+/* Social Icons */
+.ss-footer-socials {
+    display: flex;
+    gap: 1.2rem;
+    font-size: 1.4rem;
+}
+
+.ss-footer-socials i {
+    cursor: pointer;
+    transition: transform 0.3s ease, color 0.3s ease;
+    opacity: 0.85;
+}
+
+.ss-footer-socials i:hover {
+    transform: translateY(-4px) scale(1.1);
+    color: #ff385c;
+    opacity: 1;
+}
+
+/* Brand */
+.ss-footer-brand {
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.ss-footer-brand strong {
+    color: #ffffff;
+}
+
+.ss-tagline {
+    display: block;
+    font-size: 0.85rem;
+    opacity: 0.8;
+}
+
+/* Links */
+.ss-footer-links {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.ss-footer-links a {
+    color: #cbd5f5;
+    font-size: 0.9rem;
+    text-decoration: none;
+    position: relative;
+}
+
+.ss-footer-links a::after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 2px;
+    background: #ff385c;
+    left: 0;
+    bottom: -4px;
+    transition: width 0.3s ease;
+}
+
+.ss-footer-links a:hover::after {
+    width: 100%;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .ss-footer-links {
+        flex-direction: column;
+        gap: 0.6rem;
+    }
+}
+</style>
+
+<footer class="ss-footer">
+    <div class="ss-footer-container">
+
+        <!-- Socials -->
+        <div class="ss-footer-socials">
+            <i class="fa-brands fa-facebook-f"></i>
+            <i class="fa-brands fa-instagram"></i>
+            <i class="fa-brands fa-linkedin-in"></i>
+            <i class="fa-brands fa-x-twitter"></i>
         </div>
-        <div class="f-info-brand">&copy;wanderLust Private Limited</div>
-        <div class="f-info-links">
+
+        <!-- Brand -->
+        <div class="ss-footer-brand">
+            © <span id="year"></span> <strong>StaySphere</strong> Pvt. Ltd.
+            <span class="ss-tagline">Discover • Host • Belong Anywhere</span>
+        </div>
+
+        <!-- Links -->
+        <div class="ss-footer-links">
             <a href="/privacy">Privacy</a>
             <a href="/terms">Terms</a>
+            <a href="/contact">Contact</a>
         </div>
 
     </div>
 </footer>
+
+<script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+</script>

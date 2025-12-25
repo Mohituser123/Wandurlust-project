@@ -16,6 +16,7 @@ const userRouter = require("./routes/user.js");
 const passport = require("passport");
 const localStrategy = require("passport-local");
 const User = require('./models/user');
+const bookingRoutes = require("./routes/bookings");
 
 const dbUrl = process.env.DB_URL;
 console.log("✅ DB URL from .env:", dbUrl);
@@ -35,36 +36,33 @@ app.set("view engine", "ejs");
 app.engine("ejs", ejsMate);
 
 // Middleware
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json()); // ✅ Parse JSON bodies
+app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
 app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "/public")));
 
+// Sessions + flash
 const store = MongoStore.create({
     mongoUrl: dbUrl,
-    crypto: {
-        secret: process.env.SECRET,
-    },
+    crypto: { secret: process.env.SECRET },
     touchAfter: 24 * 3600,
 });
+store.on("error", () => console.log("❌ Mongo Store Error"));
 
-store.on("error", () => {
-    console.log("❌ Mongo Store Error");
-});
-
-const sessionOptions = {
+app.use(session({
     store,
     secret: process.env.SECRET,
     resave: false,
     saveUninitialized: true,
     cookie: {
-        expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
-        maxAge: 7 * 24 * 60 * 60 * 1000,
+        expires: Date.now() + 7*24*60*60*1000,
+        maxAge: 7*24*60*60*1000,
         httpOnly: true
     }
-};
-
-app.use(session(sessionOptions));
+}));
 app.use(flash());
+
+// Passport
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new localStrategy(User.authenticate()));
@@ -79,15 +77,17 @@ app.use((req, res, next) => {
     next();
 });
 
-// ✅ HOME ROUTE — make sure this is ABOVE all other routers and errors!
-app.get("/", (req, res) => {
-    res.redirect("/listings"); // or "/paintings"
-});
-
 // Routes
+app.get("/", (req, res) => res.redirect("/listings"));
 app.use("/listings", listingRouter);
 app.use("/listings/:id/reviews", reviewRouter);
+app.use("/bookings", bookingRoutes);
 app.use("/", userRouter);
+// In app.js or bookings router
+app.get("/bookings/success", (req, res) => {
+    res.render("bookings/success"); // renders views/bookings/success.ejs
+});
+
 
 // Error handler
 app.use((err, req, res, next) => {
@@ -96,6 +96,4 @@ app.use((err, req, res, next) => {
 });
 
 // Start server
-app.listen(8080, () => {
-    console.log("🚀 Server is listening on port 8080");
-});
+app.listen(8080, () => console.log("🚀 Server running on port 8080"));
